@@ -1,0 +1,29 @@
+# Core scientific computing
+numpy>=1.21.0
+scipy>=1.7.0
+pandas>=1.3.0
+
+# Machine Learning
+torch>=2.0.0
+torch-geometric>=2.3.0
+scikit-learn>=1.0.0
+
+# Chemistry and molecular modeling
+rdkit>=2022.09.1
+mordred>=1.2.0
+
+# Visualization
+matplotlib>=3.4.0
+seaborn>=0.11.0
+
+# Data processing
+h5py>=3.1.0
+netCDF4>=1.5.8
+
+# Optimization
+pyswarm>=0.6
+deap>=1.3.1
+
+# Utilities
+tqdm>=4.62.0
+pyyaml>=5.4.0
