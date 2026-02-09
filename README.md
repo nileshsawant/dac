@@ -38,6 +38,9 @@ Discrete-time Markov Chain model simulating 1,000 to 10,000 capture cycles.
 - Long-term degradation tracking
 - LCOC target validation
 
+![Markov Degradation Example](docs/images/markov_degradation_example.png)
+*Example output showing gradual degradation over 10,000 cycles with ~84% active sites remaining*
+
 ### Module 4: Geospatial Performance & Siting
 Integration with real-world hourly weather data (MERRA-2).
 
@@ -112,10 +115,6 @@ If you use this framework in your research, please cite:
 ```
 [Project citation details]
 ```
-
-## License
-
-MIT License
 
 ## Contact
 
