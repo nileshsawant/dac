@@ -86,49 +86,35 @@ def integrated_workflow():
     print("  In production: Train GNN on molecular dataset")
     print("  → Input: Molecular structures from QM calculations")
     print("  → Output: Predicted CO₂ capacity, H₂O penalty, stability metrics")
-    print("  For now: Using informed estimates based on molecular physics")
+    print("  For now: Using SAME baseline sorbent for both (GNN not active)")
     
-    # GNN would predict these molecular-level properties
-    gnn_predictions = {
-        'optimized': {'co2_capacity': 2.8, 'h2o_penalty': 0.12, 'temp_coef': 0.012},
-        'baseline': {'co2_capacity': 2.2, 'h2o_penalty': 0.20, 'temp_coef': 0.018}
+    # Since GNN is a placeholder, both start with identical molecular properties
+    # The only differences will come from:
+    # 1. ClimateOptimizer (optimizes cycle_time & regen_temp)
+    # 2. Markov degradation (different stressor parameters)
+    
+    base_sorbent_params = {
+        'co2_capacity_ref': 2.5,  # mol/kg
+        'working_capacity': 1.8,  # mol/kg
+        'h2o_penalty_factor': 0.15,
+        'temp_coefficient': 0.015,  # °C^-1
+        'humidity_coefficient': 1.1,
+        'regeneration_temp': 100.0,  # Will be optimized by ClimateOptimizer
+        'regeneration_vacuum': 55.0,  # mbar
+        'cycle_time_base': 6.0  # Will be optimized by ClimateOptimizer
     }
     
-    # Start with basic sorbent configurations from GNN predictions
-    sorbent_optimized = SorbentParameters(
-        co2_capacity_ref=gnn_predictions['optimized']['co2_capacity'],
-        working_capacity=2.0,  # mol/kg
-        h2o_penalty_factor=gnn_predictions['optimized']['h2o_penalty'],
-        temp_coefficient=gnn_predictions['optimized']['temp_coef'],
-        humidity_coefficient=1.0,
-        regeneration_temp=100.0,  # Will be optimized by ClimateOptimizer
-        regeneration_vacuum=60.0,  # mbar
-        cycle_time_base=6.0  # Will be optimized by ClimateOptimizer
-    )
+    # Both sorbents start identical (GNN placeholder does nothing)
+    sorbent_optimized = SorbentParameters(**base_sorbent_params)
+    sorbent_baseline = SorbentParameters(**base_sorbent_params)
     
-    sorbent_baseline = SorbentParameters(
-        co2_capacity_ref=gnn_predictions['baseline']['co2_capacity'],
-        working_capacity=1.5,  # mol/kg
-        h2o_penalty_factor=gnn_predictions['baseline']['h2o_penalty'],
-        temp_coefficient=gnn_predictions['baseline']['temp_coef'],
-        humidity_coefficient=1.3,
-        regeneration_temp=105.0,  # Will be optimized
-        regeneration_vacuum=50.0,  # mbar
-        cycle_time_base=6.5  # hours
-    )
-    
-    print("\nInitial sorbent configurations (from GNN):")
-    print("\n  OPTIMIZED:")
+    print("\nInitial sorbent configuration (both identical, GNN inactive):")
     print(f"    CO₂ capacity: {sorbent_optimized.co2_capacity_ref} mol/kg")
     print(f"    H₂O penalty:  {sorbent_optimized.h2o_penalty_factor}")
     print(f"    Regen temp:   {sorbent_optimized.regeneration_temp}°C (pre-optimization)")
     print(f"    Cycle time:   {sorbent_optimized.cycle_time_base} hours (pre-optimization)")
-    
-    print("\n  BASELINE:")
-    print(f"    CO₂ capacity: {sorbent_baseline.co2_capacity_ref} mol/kg")
-    print(f"    H₂O penalty:  {sorbent_baseline.h2o_penalty_factor}")
-    print(f"    Regen temp:   {sorbent_baseline.regeneration_temp}°C (pre-optimization)")
-    print(f"    Cycle time:   {sorbent_baseline.cycle_time_base} hours (pre-optimization)")
+    print("\n  Note: Both optimized and baseline start with identical parameters.")
+    print("  Differences will come from ClimateOptimizer and Markov stressors.")
     
     # ----- CLIMATE OPTIMIZATION -----
     print("\n[MODULE 4 - Climate Optimization]")
@@ -182,16 +168,11 @@ def integrated_workflow():
     deg_opt = markov_opt.simulate_cycles(n_cycles=10000, record_interval=100)
     
     print("Simulating baseline sorbent degradation...")
-    # Baseline has moderately worse degradation (more visible in plots)
-    from dac_framework.markov_degradation import StressorParameters
-    baseline_stressors = StressorParameters(
-        ea_cn_cleavage=50.0,  # Lower than optimized (60) but not catastrophic
-        water_block_rate=1.5e-4,  # 1.9x higher water blocking
-        water_recovery_rate=0.010,  # Slower recovery (vs 0.015 default)
-        oxidation_rate_constant=1.5e-7,  # 3x higher oxidation
-        thermal_degradation_rate=2.0e-8  # 2x higher thermal degradation
-    )
-    markov_base = MarkovDegradation(stressors=baseline_stressors)
+    # Both use SAME stressor parameters (same molecular properties)
+    # Differences in degradation will come from different operating conditions:
+    # - Baseline has higher regen temp (106.5°C vs 96.9°C from ClimateOptimizer)
+    # - Higher temperature causes more thermal degradation over time
+    markov_base = MarkovDegradation()  # Same parameters as optimized
     deg_base = markov_base.simulate_cycles(n_cycles=10000, record_interval=100)
     
     # Validate against LCOC
@@ -333,18 +314,18 @@ def integrated_workflow():
     ax1.legend()
     ax1.grid(alpha=0.3)
     
-    # Plot 2: Performance by location (Optimized)
+    # Plot 2: Performance by location (Optimized) - Year 1 only
     ax2 = plt.subplot(2, 3, 2)
     ax2.barh(comparison_opt['location'], comparison_opt['avg_crr'], color='green', alpha=0.7)
     ax2.set_xlabel('Average CRR (mol CO₂/kg·h)')
-    ax2.set_title('Optimized Sorbent Performance', fontweight='bold')
+    ax2.set_title('Optimized Sorbent - Year 1\n(After ClimateOptimizer)', fontweight='bold', fontsize=10)
     ax2.grid(alpha=0.3, axis='x')
     
-    # Plot 3: Performance by location (Baseline)
+    # Plot 3: Performance by location (Baseline) - Year 1 only
     ax3 = plt.subplot(2, 3, 3)
     ax3.barh(comparison_base['location'], comparison_base['avg_crr'], color='red', alpha=0.7)
     ax3.set_xlabel('Average CRR (mol CO₂/kg·h)')
-    ax3.set_title('Baseline Sorbent Performance', fontweight='bold')
+    ax3.set_title('Baseline Sorbent - Year 1\n(After ClimateOptimizer)', fontweight='bold', fontsize=10)
     ax3.grid(alpha=0.3, axis='x')
     
     # Plot 4: Energy efficiency comparison
@@ -371,21 +352,34 @@ def integrated_workflow():
     ax5.legend()
     ax5.grid(alpha=0.3, axis='y')
     
-    # Plot 6: Overall improvement
+    # Plot 6: 3-Year lifetime performance with degradation
     ax6 = plt.subplot(2, 3, 6)
-    improvements = []
-    for i, location in enumerate(locations):
-        opt_crr = comparison_opt.iloc[i]['avg_crr']
-        base_crr = comparison_base.iloc[i]['avg_crr']
-        improvement = ((opt_crr - base_crr) / base_crr) * 100
-        improvements.append(improvement)
+    lifetime_improvements = []
+    lifetime_opt_values = []
+    lifetime_base_values = []
     
-    colors = ['green' if imp > 0 else 'red' for imp in improvements]
-    ax6.barh([loc.name.split(',')[0] for loc in locations], improvements, color=colors, alpha=0.7)
-    ax6.set_xlabel('CRR Improvement (%)')
-    ax6.set_title('Optimized vs Baseline', fontweight='bold')
-    ax6.axvline(0, color='black', linewidth=0.5)
-    ax6.grid(alpha=0.3, axis='x')
+    for location in locations:
+        lifetime_opt, _ = calculate_lifetime_crr(
+            location.name, sorbent_optimized, deg_opt, geo
+        )
+        lifetime_base, _ = calculate_lifetime_crr(
+            location.name, sorbent_baseline, deg_base, geo
+        )
+        lifetime_opt_values.append(lifetime_opt)
+        lifetime_base_values.append(lifetime_base)
+        improvement = ((lifetime_opt - lifetime_base) / lifetime_base) * 100
+        lifetime_improvements.append(improvement)
+    
+    x_pos = np.arange(len(locations))
+    width = 0.35
+    ax6.bar(x_pos - width/2, lifetime_opt_values, width, label='Optimized', color='green', alpha=0.7)
+    ax6.bar(x_pos + width/2, lifetime_base_values, width, label='Baseline', color='red', alpha=0.7)
+    ax6.set_ylabel('3-Year Avg CRR (mol CO₂/kg·h)')
+    ax6.set_title('Lifetime Performance with Degradation', fontweight='bold')
+    ax6.set_xticks(x_pos)
+    ax6.set_xticklabels([loc.name.split(',')[0] for loc in locations], rotation=45, ha='right')
+    ax6.legend()
+    ax6.grid(alpha=0.3, axis='y')
     
     plt.tight_layout()
     plt.savefig('integrated_analysis.png', dpi=300, bbox_inches='tight')
@@ -407,10 +401,10 @@ def integrated_workflow():
         deg_opt.iloc[-1]['active'] * 100))
     print("  3. Baseline sorbent maintains {:.1f}% active sites after 10,000 cycles".format(
         deg_base.iloc[-1]['active'] * 100))
-    print("  4. Best location: {} with {:.4f} mol CO₂/kg·h (optimized)".format(
+    print("  4. Best location: {} with {:.4f} mol CO₂/kg·h (optimized, year 1)".format(
         comparison_opt.iloc[0]['location'], comparison_opt.iloc[0]['avg_crr']))
-    print("  5. Average improvement: {:.1f}% across all locations".format(
-        np.mean(improvements)))
+    print("  5. Average 3-year lifetime improvement: {:.1f}% across all locations".format(
+        np.mean(lifetime_improvements)))
     
     print("\n" + "="*80 + "\n")
 

@@ -124,13 +124,6 @@ dac/
 ## Citation
 
 If you use this framework in your research, please cite:
-```
-[Project citation details]
-```
-
-## Contact
-
-For questions and support, please open an issue on the GitHub repository.
 
 ```bibtex
 @software{dac_framework_2026,
