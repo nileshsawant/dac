@@ -21,6 +21,12 @@ Convert quantum mechanical binding energies into probabilistic event statistics 
 - Energy distribution histograms
 - State occupancy calculations
 
+![Energy Distribution](docs/images/energy_distribution.png)
+*Binding energy distribution analysis from DFT calculations*
+
+![Mechanism Kinetics](docs/images/mechanism_kinetics.png)
+*Temperature-dependent rate constants for CO₂-amine reaction mechanism*
+
 ### Module 2: Data-Driven Design Surrogate
 Equivariant Graph Neural Network (eGNN) for predicting sorbent performance across ambient climates.
 
