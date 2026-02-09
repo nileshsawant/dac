@@ -61,18 +61,6 @@ Integration with real-world hourly weather data (MERRA-2).
 ![Hourly Performance Profile](docs/images/hourly_performance.png)
 *Diurnal climate patterns and corresponding performance variations over 24 hours*
 
-### Integrated Multi-Scale Analysis
-Complete workflow demonstrating all four modules working together from molecular design to geospatial deployment.
-
-**Key Features:**
-- Molecular binding analysis → Sorbent optimization
-- Degradation simulation with optimized vs baseline comparison
-- Multi-location performance evaluation
-- 3-year lifetime projections with climate integration
-
-![Integrated Analysis](docs/images/integrated_analysis.png)
-*Complete multi-scale analysis showing the impact of molecular-informed design on long-term geospatial performance. The optimized sorbent (informed by molecular physics) maintains 83.7% active sites after 10,000 cycles vs 0% for the baseline, resulting in 96.7% performance improvement in Phoenix over 3 years.*
-
 ## Installation
 
 ```bash
@@ -143,3 +131,12 @@ If you use this framework in your research, please cite:
 ## Contact
 
 For questions and support, please open an issue on the GitHub repository.
+
+```bibtex
+@software{dac_framework_2026,
+  author = {Sawant, Nilesh},
+  title = {Beyond Isotherms: Humidity-Robust TVSA DAC Modeling Framework},
+  year = {2026},
+  url = {https://github.com/nileshsawant/dac},
+  note = {A multi-scale modeling framework for amine-based Direct Air Capture systems}
+}
