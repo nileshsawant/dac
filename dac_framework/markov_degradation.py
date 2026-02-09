@@ -54,23 +54,23 @@ class CycleConditions:
 class StressorParameters:
     """Chemical stressor parameters affecting transition probabilities."""
     # C-N cleavage kinetics
-    ea_cn_cleavage: float = 20.0  # Activation energy (kJ/mol)
+    ea_cn_cleavage: float = 60.0  # Activation energy (kJ/mol) - moderate stability
     
     # Water effects
-    water_block_rate: float = 1e-4  # Rate of water blocking per cycle
-    water_recovery_rate: float = 0.1  # Rate of water desorption
+    water_block_rate: float = 3e-5  # Rate of water blocking per second
+    water_recovery_rate: float = 0.08  # Rate of water desorption per second
     
     # Oxidation
     o2_concentration: float = 0.21  # O2 mole fraction
-    oxidation_rate_constant: float = 1e-6  # Base oxidation rate
+    oxidation_rate_constant: float = 5e-8  # Base oxidation rate per second
     
     # Urea formation
-    urea_formation_rate: float = 5e-5  # Rate of urea formation
-    urea_reversal_rate: float = 1e-3  # Rate of urea reversal
+    urea_formation_rate: float = 8e-7  # Rate of urea formation per second
+    urea_reversal_rate: float = 8e-4  # Rate of urea reversal per second
     
     # Thermal degradation
-    thermal_degradation_rate: float = 1e-7  # Base thermal degradation rate
-    thermal_ea: float = 100.0  # Activation energy for thermal degradation (kJ/mol)
+    thermal_degradation_rate: float = 5e-9  # Base thermal degradation rate per second
+    thermal_ea: float = 110.0  # Activation energy for thermal degradation (kJ/mol)
 
 
 class TransitionMatrix:
