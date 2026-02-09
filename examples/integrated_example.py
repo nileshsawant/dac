@@ -20,7 +20,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import sys
-sys.path.append('..')
+import os
+
+# Add parent directory to path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from dac_framework import (
     MolecularPhysics,
