@@ -49,6 +49,12 @@ Integration with real-world hourly weather data (MERRA-2).
 - Climate-specific performance optimization
 - Carbon Removal Rate (CRR) calculation
 
+![Location Comparison](docs/images/location_comparison.png)
+*Multi-location performance comparison across different climate zones*
+
+![Hourly Performance Profile](docs/images/hourly_performance.png)
+*Diurnal climate patterns and corresponding performance variations over 24 hours*
+
 ## Installation
 
 ```bash
