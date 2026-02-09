@@ -57,16 +57,16 @@ class StressorParameters:
     ea_cn_cleavage: float = 60.0  # Activation energy (kJ/mol) - moderate stability
     
     # Water effects
-    water_block_rate: float = 3e-5  # Rate of water blocking per second
-    water_recovery_rate: float = 0.08  # Rate of water desorption per second
+    water_block_rate: float = 8e-5  # Rate of water blocking per second (increased for visibility)
+    water_recovery_rate: float = 0.015  # Rate of water desorption per second (reduced for accumulation)
     
     # Oxidation
     o2_concentration: float = 0.21  # O2 mole fraction
     oxidation_rate_constant: float = 5e-8  # Base oxidation rate per second
     
     # Urea formation
-    urea_formation_rate: float = 8e-7  # Rate of urea formation per second
-    urea_reversal_rate: float = 8e-4  # Rate of urea reversal per second
+    urea_formation_rate: float = 2e-6  # Rate of urea formation per second (increased)
+    urea_reversal_rate: float = 2e-4  # Rate of urea reversal per second (reduced)
     
     # Thermal degradation
     thermal_degradation_rate: float = 5e-9  # Base thermal degradation rate per second
